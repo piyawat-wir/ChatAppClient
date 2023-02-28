@@ -1,0 +1,33 @@
+.container {
+	padding: 30px;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 50px;
+	overflow: hidden;
+}
+
+.fieldBox {
+	margin-bottom: 5px;
+	margin-top: 10px;
+	width: 100%;
+}
+
+.fieldBox input {
+	width: calc(100% - 22px);
+}
+
+.buttons {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	margin-top: 40px;
+}
+
+.createBtn {
+	background-color: #a4877d;
+}
+
+.joinBtn {
+	min-width: 100px;
+	margin-left: 10px;
+}
