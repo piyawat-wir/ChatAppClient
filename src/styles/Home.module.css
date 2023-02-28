@@ -1,0 +1,27 @@
+.main {
+	display: grid;
+	grid-template-columns: 400px auto;
+	min-height: 100vh;
+}
+
+.sidebar {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	box-shadow: -8px 0 10px 5px rgb(163, 89, 170, 0.4);
+	background-color: rgba(0,0,0,0.1);
+	max-height: 100vh;
+	overflow: auto;
+	backdrop-filter: blur(50px);
+}
+
+@media (prefers-color-scheme: dark) {
+	.sidebar {
+		box-shadow: -8px 0 10px 5px rgb(0, 0, 0, 0.4);
+	}
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+}
