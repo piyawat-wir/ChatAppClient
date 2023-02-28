@@ -1,0 +1,27 @@
+.container {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+	margin-top: 20px;
+}
+
+.container h1 {
+	font-size: 36px;
+	margin-bottom: 12px;
+}
+
+.container p {
+	margin-bottom: 20px;
+}
+
+.container.control {
+	align-self: flex-end;
+}
+
+.control button {
+	display: flex;
+	align-items: center;
+	background-color: rgb(180, 63, 102);
+}
