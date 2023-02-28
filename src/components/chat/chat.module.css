@@ -1,0 +1,85 @@
+.log {
+	width: calc(100% - 20px);
+	display: flex;
+	flex-direction: column;
+	margin: 0 10px;
+	overflow-y: scroll;
+	height: 100%;
+}
+
+.msg {
+	display: flex;
+	margin-bottom: 10px;
+	margin-right: 80px;
+}
+.msg img {
+	border-radius: 100%;
+	width: 80px;
+	height: 80px;
+	margin: 10px;
+}
+.msg .content {
+	display: flex;
+	flex-direction: column;
+	margin-right: 10px;
+}
+.msg .msgcontainer {
+	max-width: 300px;
+	margin-bottom: 5px;
+}
+.msgcontainer p {
+	display: inline-block;
+	background-color: #d7d1fe;
+	color: black;
+	padding: 10px 15px;
+	border-radius: 20px 20px;
+	word-break: break-word;
+	border-bottom-right-radius: 10px;
+	border-top-left-radius: 5px;
+}
+.msg .content .name {
+	font-weight: 500;
+	margin: 4px 0px;
+}
+.msg .content time {
+	color: lightslategrey
+}
+
+.msg.right {
+	flex-direction: row-reverse;
+	text-align: right;
+	margin-left: 80px;
+	margin-right: 0;
+}
+.msg.right img {
+	transform: scaleX(-1);
+}
+.msg.right .msgcontainer p {
+	border-radius: 20px 20px;
+	border-bottom-left-radius: 10px;
+	border-top-right-radius: 5px;
+	background-color: slateblue;
+	color: white
+}
+
+.input {
+	display: flex;
+	margin: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.input textarea {
+	width: 100%;
+	margin-right: 10px;
+	word-break: break-word;
+	height: 1.4em;
+	resize: none;
+}
+
+.input button {
+	max-height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
