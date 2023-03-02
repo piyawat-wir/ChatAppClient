@@ -20,7 +20,7 @@ export type CustomIncomingMessage = IncomingMessage & {
 	cookies: NextApiRequestCookies
 }
 
-export type AuthUserData = {
+export type AuthParameters = {
 	id: string,
 	roomcode: string,
 }
@@ -37,10 +37,10 @@ export function setCookie(
 	res.setHeader('Set-Cookie', serialize(name, valueAsString, options));
 }
 
-export function authenticateUser(res: NextApiResponse, user: AuthUserData) {
-	if (!user) return;
+export function authenticateUserRequest(res: NextApiResponse, authParams: AuthParameters) {
+	if (!authParams) return;
 
-	const payload = { id: user.id };
+	const payload = { id: authParams.id };
 	const options = { expiresIn: '1h' };
 	const token = jwt.sign(payload, JWT_TOKEN_KEY, options);
 	setCookie(res, "auth", token, cookieOptions);
@@ -60,7 +60,7 @@ export async function userFromHTTPRequest(req: CustomIncomingMessage) {
 	if (!token) return;
 
 	try {
-		const data = jwt.verify(token, JWT_TOKEN_KEY) as AuthUserData;
+		const data = jwt.verify(token, JWT_TOKEN_KEY) as AuthParameters;
 
 		// TODO: check user session
 		// TODO: if inactive session exists, return data
