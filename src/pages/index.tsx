@@ -1,7 +1,9 @@
 import LoginForm from '@/components/login/LoginForm'
-import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 import DefaultHead from '@/components/DefaultHead'
+import { AppServerSidePropsContext } from '@/lib/types'
+import { getSessionData } from '@/web/sessions'
+import { GetServerSideProps } from 'next'
 
 export default function Home() {
 	return (
@@ -17,3 +19,16 @@ export default function Home() {
 		</>
 	)
 }
+
+export const getServerSideProps: GetServerSideProps =
+	async ({ req }: AppServerSidePropsContext) => {
+		const session = await getSessionData(req) || null;
+		if (session) return {
+			redirect: {
+				destination: `r/${session.roomcode}`,
+				permanent: false
+			}
+		};
+
+		return { props: { } }
+	}
