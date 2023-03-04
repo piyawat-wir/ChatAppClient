@@ -2,20 +2,21 @@ import ChatInput from "@/components/chat/ChatInput";
 import ChatLog from "@/components/chat/ChatLog";
 import DefaultHead from "@/components/DefaultHead";
 import RoomDetail from "@/components/room/RoomDetail";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { GetServerSideProps } from "next";
+import { AppCookies, getSessionData, SessionData } from "@/web/sessions";
+import { AppServerSidePropsContext } from "@/lib/types";
+import useSocket from "@/hooks/useSocket";
 import styles from '@/styles/Home.module.css'
 
-export default function ChatRoom() {
-	const router = useRouter();
-	const { roomcode } = router.query;
+interface Props {
+	session: SessionData
+	sessionToken: AppCookies['auth']
+}
 
-	useEffect(() => {
-		if (roomcode) 1;
-		// router.push('/')
-	}, [router, roomcode])
+export default function ChatRoom({ session, sessionToken }: Props) {
 
-	if (!roomcode) return;
+	const { roomcode } = session;
+	const socket = useSocket(sessionToken);
 
 	return <>
 		<DefaultHead />
@@ -30,3 +31,18 @@ export default function ChatRoom() {
 		</main>
 	</>;
 }
+
+export const getServerSideProps: GetServerSideProps =
+	async ({ req }: AppServerSidePropsContext) => {
+		const session = await getSessionData(req);
+		const sessionToken = req.cookies.auth;
+
+		if (!session) return {
+			redirect: {
+				destination: '/',
+				permanent: false
+			}
+		};
+
+		return { props: { session, sessionToken } }
+	}
