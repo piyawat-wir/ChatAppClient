@@ -1,6 +1,6 @@
 import MsgBox from "./MsgBox"
 import styles from './chat.module.css';
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
 	room: string,
@@ -18,7 +18,8 @@ const user = {
 	a: "Red Dum",
 	b: "Bored_fox",
 }
-const messages = [
+
+const hardMakeMessages = () => [
 	makeMessage("Hello!! >W<", user.a),
 	makeMessage("AGRHHHHHHHHHHHHH!!!!!!!!11+", user.b),
 	makeMessage("watt?", user.a),
@@ -34,19 +35,23 @@ const messages = [
 
 export default function ChatLog({ room, username }: Props) {
 
+	const [messages, setMessages] = useState<Message[]>([]);
 	const list = useRef<HTMLDivElement>(null);
 
-	const msgElements = messages.map(msg => {
-		return (<MsgBox key={msg.time} msg={msg} righted={(msg.user==user.a)}/>)
-	});
+	useEffect(() => {
+		const messages = hardMakeMessages();
+		setMessages(messages);
+	}, [])
 
-	useEffect(()=>{
+	useEffect(() => {
 		list.current?.lastElementChild?.scrollIntoView();
-	})
+	}, [messages])
 
 	return <>
 		<div className={styles.log} ref={list}>
-			{msgElements}
+			{messages.map(msg => {
+				return (<MsgBox key={msg.time} msg={msg} righted={(msg.user == user.a)} />)
+			})}
 		</div>
 	</>;
 }
