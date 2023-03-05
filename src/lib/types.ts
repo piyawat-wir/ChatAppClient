@@ -11,7 +11,6 @@ export type UserData = {
 
 export type UserRegisterData = {
 	name: string,
-	roomcode: string,
 	profilePicture: string
 }
 
