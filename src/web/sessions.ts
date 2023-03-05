@@ -3,6 +3,8 @@ import { NextApiRequestCookies } from "next/dist/server/api-utils";
 import { NextApiResponse } from "next";
 import { serialize } from "cookie";
 import jwt from 'jsonwebtoken'
+import axios from "axios";
+import { requestBackend } from "@/lib/auth";
 
 const JWT_TOKEN_KEY = process.env.JWT_TOKEN_KEY || 'defaultsecretkey';
 const cookieOptions = {
@@ -21,8 +23,7 @@ export type CustomIncomingMessage = IncomingMessage & {
 }
 
 export interface SessionCookieData {
-	id: string,
-	roomcode: string,
+	id: string
 }
 
 export function setCookie(
@@ -36,7 +37,7 @@ export function setCookie(
 		value.toString();
 
 	const rawCookieHeader = (res.getHeader('Set-Cookie') || []) as string | string[];
-	const cookieHeader = (typeof rawCookieHeader !== 'object')? [rawCookieHeader]: rawCookieHeader
+	const cookieHeader = (typeof rawCookieHeader !== 'object') ? [rawCookieHeader] : rawCookieHeader
 
 	res.setHeader('Set-Cookie', [...cookieHeader, serialize(name, valueAsString, options)]);
 }
@@ -44,7 +45,7 @@ export function setCookie(
 export function authenticateUserSession(res: NextApiResponse, session: SessionCookieData) {
 	if (!session) return;
 
-	const payload = { id: session.id, roomcode: session.roomcode };
+	const payload = { id: session.id };
 	const options = { expiresIn: '1h' };
 	const token = jwt.sign(payload, JWT_TOKEN_KEY, options);
 	setCookie(res, "auth", token, cookieOptions);
@@ -58,18 +59,40 @@ export function clearUserSession(res: NextApiResponse) {
 	});
 }
 
-export async function getSessionData(req: CustomIncomingMessage) {
-	const { auth: token } = req.cookies;
+export interface SessionData {
+	createTime: number
+	id: string
+	roomcode: string
+}
+export interface BackendRequestBody {
+	auth: string
+	data?: Record<string, any>
+}
 
+export const getSessionToken = (req: CustomIncomingMessage) => req.cookies.auth;
+
+export function getSessionCookie(req: CustomIncomingMessage) {
+	const token = getSessionToken(req);
 	if (!token) return;
 
 	try {
-		const sessionData = jwt.verify(token, JWT_TOKEN_KEY) as SessionCookieData;
-
-		// TODO: check user session
-		// TODO: if inactive session exists, return data
-		// TODO: if active sessions exists, return none
-
-		return sessionData;
+		const session = jwt.verify(token, JWT_TOKEN_KEY) as SessionCookieData;
+		if (!session) return;
+		return session;
 	} catch (err) { return }
+}
+
+export async function getSessionData(req: CustomIncomingMessage) {
+	const token = getSessionToken(req);
+	if (!token) return;
+
+	const session = getSessionCookie(req);
+	if (!session) return;
+
+	const res = await requestBackend<SessionData>({
+		axiosMethod: axios.post,
+		path: '/session',
+		auth: token
+	})
+	return res.data;
 }
