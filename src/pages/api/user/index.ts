@@ -4,13 +4,14 @@ import axios from "axios";
 import { getSessionToken } from "@/web/sessions";
 import { requestBackend } from "@/lib/auth";
 import { handleErrorStatus, noAuth, ok } from "@/lib/api/handler";
+import { UserData } from "@/lib/types";
 
 const handler = defaultHandler<NextApiRequest, NextApiResponse>()
 	.post(async (req, res) => {
 		const token = getSessionToken(req);
 		if (!token) return noAuth(res);
 
-		const { data, status } = await requestBackend({
+		const { data, status } = await requestBackend<UserData>({
 			axiosMethod: axios.post,
 			path: '/user',
 			auth: token

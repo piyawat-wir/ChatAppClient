@@ -1,4 +1,4 @@
-import { UserRegisterData } from "@/lib/types";
+import { UserData, UserRegisterData } from "@/lib/types";
 import defaultHandler from "@/pages/_defaultHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
@@ -12,7 +12,7 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
 		if (!token) return noAuth(res);
 
 		const userdata = req.body as UserRegisterData
-		const { data, status } = await requestBackend({
+		const { data, status } = await requestBackend<UserData>({
 			axiosMethod: axios.post,
 			path: '/user/create',
 			auth: token,
