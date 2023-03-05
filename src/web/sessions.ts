@@ -20,7 +20,7 @@ export type CustomIncomingMessage = IncomingMessage & {
 	cookies: NextApiRequestCookies & AppCookies
 }
 
-export interface SessionData {
+export interface SessionCookieData {
 	id: string,
 	roomcode: string,
 }
@@ -34,10 +34,14 @@ export function setCookie(
 	const valueAsString = (typeof value === 'object') ?
 		`j:${JSON.stringify(value)}` :
 		value.toString();
-	res.setHeader('Set-Cookie', serialize(name, valueAsString, options));
+
+	const rawCookieHeader = (res.getHeader('Set-Cookie') || []) as string | string[];
+	const cookieHeader = (typeof rawCookieHeader !== 'object')? [rawCookieHeader]: rawCookieHeader
+
+	res.setHeader('Set-Cookie', [...cookieHeader, serialize(name, valueAsString, options)]);
 }
 
-export function authenticateUserSession(res: NextApiResponse, session: SessionData) {
+export function authenticateUserSession(res: NextApiResponse, session: SessionCookieData) {
 	if (!session) return;
 
 	const payload = { id: session.id, roomcode: session.roomcode };
@@ -60,7 +64,7 @@ export async function getSessionData(req: CustomIncomingMessage) {
 	if (!token) return;
 
 	try {
-		const sessionData = jwt.verify(token, JWT_TOKEN_KEY) as SessionData;
+		const sessionData = jwt.verify(token, JWT_TOKEN_KEY) as SessionCookieData;
 
 		// TODO: check user session
 		// TODO: if inactive session exists, return data
