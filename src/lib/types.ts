@@ -11,7 +11,8 @@ export type UserData = {
 
 export type UserRegisterData = {
 	name: string,
-	profilePicture: string
+	profilePicture: string,
+	roomcode?: string
 }
 
 export interface AppServerSidePropsContext extends GetServerSidePropsContext {
