@@ -23,12 +23,14 @@ export default function Home() {
 export const getServerSideProps: GetServerSideProps =
 	async ({ req }: AppServerSidePropsContext) => {
 		const session = await getSessionData(req) || null;
-		if (session) return {
-			redirect: {
-				destination: `r/${session.roomcode}`,
-				permanent: false
+		if (session?.roomcode) {
+			return {
+				redirect: {
+					destination: `r/${session.roomcode}`,
+					permanent: false
+				}
 			}
-		};
+		}
 
 		return { props: { } }
 	}
