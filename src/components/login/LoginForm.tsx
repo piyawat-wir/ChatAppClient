@@ -1,52 +1,76 @@
-import { requestSession } from "@/lib/api/sessions";
+import { endSession, getSession, requestSession } from "@/lib/api/sessions";
 import { createUser } from "@/lib/api/users";
-import { UserRegisterData } from "@/lib/types";
+import { UserData, UserRegisterData } from "@/lib/types";
+import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react"
 import styles from './LoginForm.module.css'
 
 export default function LoginForm() {
 
 	const [username, setUsername] = useState('');
 	const [roomcode, setRoomcode] = useState('');
+	const [success, setSuccess] = useState(false);
+
+	const myref = useRef<HTMLDivElement | null>(null);
 	const router = useRouter();
 
+	useEffect(() => {
+		if (success) {
+			router.replace(`/r/${roomcode}`)
+		}
+	}, [success, router, roomcode])
+
 	function verify() {
+		if (username.length <= 0 || roomcode.length <= 0) return false;
+		return true;
 	}
 
-	function submitHandler(e: FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		const userdata: UserRegisterData = {
-			name: username,
-			roomcode: roomcode,
-			profilePicture: ''
+	async function submitHandler() {
+		if (!verify()) return;
+
+		try {
+			const { data: session } = await getSession();
+		} catch (err) {
+			const { data: session } = await requestSession();
+			console.log(session);
 		}
-		
-		createUser(userdata).then(({data})=>{
-			console.log('id:', data.id);
-			router.push(`r/${roomcode}`);
-		});
+
+		try {
+			const { data: userdata } = await createUser({ name: username, profilePicture: '', roomcode })
+			console.log(userdata);
+
+			setSuccess(true);
+		} catch (err) {
+			console.error(err);
+
+			const { status } = await endSession();
+			console.log(status);
+		}
 	}
 
 	return (
-		<div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
-			<form className={styles.container} onSubmit={submitHandler}>
-				<div><h1>🐈‍⬛ChatCat</h1></div>
+		<div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }} ref={myref}>
+			<form className={styles.container} onSubmit={e => { e.preventDefault(); submitHandler() }}>
+				<div style={{ marginBottom: '10px' }}><h1>🐈‍⬛ChatCat</h1></div>
 				<div className={styles.fieldBox}>
 					<input type='text' name='name'
 						placeholder="Username"
+						required
 						onChange={e => setUsername(e.target.value)}
 					/>
 				</div>
 				<div className={styles.fieldBox}>
 					<input type='text' name='roomcode'
 						placeholder="Room code"
+						required
 						onChange={e => setRoomcode(e.target.value)}
 					/>
 				</div>
 				<div className={styles.buttons}>
-					<button className={styles.createBtn}>Create Room</button>
-					<button className={styles.joinBtn}>Join</button>
+					<Link href='/new' className='btn'>Create room</Link>
+					<button type='submit' className={styles.joinBtn} onClick={e => submitHandler()}>Join</button>
 				</div>
 			</form>
 		</div>
