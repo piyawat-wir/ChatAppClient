@@ -1,14 +1,22 @@
-import { requestSession } from "@/lib/api/sessions";
+import { getSession, requestSession } from "@/lib/api/sessions";
 import { createUser } from "@/lib/api/users";
+import { SessionData } from "@/web/sessions";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styles from './RegisterForm.module.css'
 
 export default function RegisterForm() {
 
 	const [username, setUsername] = useState('');
+	const [roomcode, setRoomcode] = useState('');
 	const router = useRouter();
+
+	useEffect(() => {
+		if (roomcode) {
+			router.replace(`/r/${roomcode}`)
+		}
+	}, [roomcode, router])
 
 	function verify() {
 		if (username.length <= 0) return false;
@@ -18,13 +26,27 @@ export default function RegisterForm() {
 	async function submitHandler() {
 		if (!verify()) return;
 
-		const { data: session } = await requestSession();
-		console.log(session);
+		try {
+			const { data: session } = await getSession();
+			if (session.roomcode) return setRoomcode(session.roomcode);
+		} catch (err) {
+			const { data: session } = await requestSession();
+			console.log(session);
+		}
 
-		const { data: userdata } = await createUser({ name: username, profilePicture: '' })
-		console.log(userdata);
+		try {
+			const { data: userdata } = await createUser({ name: username, profilePicture: '' })
+			console.log(userdata);
+		} catch (err) {
+			return console.error(err);
+		}
 
-		router.push('/')
+		try {
+			const { data: session } = await getSession();
+			return setRoomcode(session.roomcode);
+		} catch (err) {
+			console.error(err)
+		}
 	}
 
 	return (
