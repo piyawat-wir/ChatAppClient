@@ -1,11 +1,16 @@
 import { SessionData } from "@/web/sessions";
-import { UserData } from "@/lib/types";
 import axios from "axios";
+import path from "path";
 
-const API_URI = 'api/auth/sessions';
+const API_URI = '/api/auth/session';
 
-export function requestSession(authData: SessionData) {
-	return axios.post<UserData>(API_URI, authData)
+export function requestSession() {
+	const uri = path.join(API_URI, 'create');
+	return axios.post<SessionData>(uri);
+}
+
+export function getSession() {
+	return axios.post<SessionData>(API_URI);
 }
 
 export function endSession() {
