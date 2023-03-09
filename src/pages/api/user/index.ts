@@ -16,7 +16,7 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
 			path: '/user',
 			auth: token
 		})
-		handleErrorStatus(status, res);
+		if (handleErrorStatus(status, res)) return;
 
 		res.json(data);
 	})
@@ -29,7 +29,7 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
 			path: '/user/delete',
 			auth: token
 		})
-		handleErrorStatus(status, res);
+		if (handleErrorStatus(status, res)) return;
 
 		ok(res);
 	})

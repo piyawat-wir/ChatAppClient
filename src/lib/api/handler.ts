@@ -13,6 +13,7 @@ const errhandler: Record<number, typeof noAuth> = {
 }
 
 export function handleErrorStatus(status: number, res: NextApiResponse) {
-	if (!errhandler[status]) return;
-	return errhandler[status](res);
+	if (!errhandler[status]) return false;
+	errhandler[status](res);
+	return true;
 }

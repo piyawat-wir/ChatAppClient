@@ -18,7 +18,7 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
 			auth: token,
 			data: userdata
 		})
-		handleErrorStatus(status, res);
+		if (handleErrorStatus(status, res)) return;
 		
 		res.json(data);
 	})
