@@ -59,7 +59,7 @@ export function clearUserSession(res: NextApiResponse) {
 	});
 }
 
-export interface SessionData {
+export interface SessionData extends SessionCookieData {
 	createTime: number
 	id: string
 	roomcode: string
