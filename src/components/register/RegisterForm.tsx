@@ -1,6 +1,5 @@
 import { getSession, requestSession } from "@/lib/api/sessions";
 import { createUser } from "@/lib/api/users";
-import { SessionData } from "@/web/sessions";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react"

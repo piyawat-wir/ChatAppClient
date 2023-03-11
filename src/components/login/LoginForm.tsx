@@ -1,10 +1,8 @@
 import { endSession, getSession, requestSession } from "@/lib/api/sessions";
 import { createUser } from "@/lib/api/users";
-import { UserData, UserRegisterData } from "@/lib/types";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ProfilePictureNames } from "../register/RegisterForm";
 import styles from './LoginForm.module.css'
 
