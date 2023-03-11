@@ -25,8 +25,8 @@ export default function ChatRoom({ session, sessionToken }: Props) {
 				<RoomDetail roomcode={roomcode as string} />
 			</div>
 			<div className={styles.body} style={{ height: '100vh' }}>
-				<ChatLog room={roomcode as string} username={'sampleUser'} />
-				<ChatInput />
+				<ChatLog socket={socket} userid={session.id} />
+				<ChatInput socket={socket}/>
 			</div>
 		</main>
 	</>;
