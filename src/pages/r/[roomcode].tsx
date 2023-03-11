@@ -6,7 +6,7 @@ import { GetServerSideProps } from "next";
 import { AppCookies, getSessionData, SessionData } from "@/web/sessions";
 import { AppServerSidePropsContext } from "@/lib/types";
 import useSocket from "@/hooks/useSocket";
-import styles from '@/styles/Home.module.css'
+import MainLayout from "@/components/layout/Main";
 
 interface Props {
 	session: SessionData
@@ -20,15 +20,13 @@ export default function ChatRoom({ session, sessionToken }: Props) {
 
 	return <>
 		<DefaultHead />
-		<main className={styles.main}>
-			<div className={styles.sidebar} style={{ height: '100vh' }}	>
-				<RoomDetail roomcode={roomcode as string} />
-			</div>
-			<div className={styles.body} style={{ height: '100vh' }}>
+		<MainLayout
+			sidebar={<RoomDetail roomcode={roomcode as string} />}
+			body={<>
 				<ChatLog socket={socket} userid={session.id} />
-				<ChatInput socket={socket}/>
-			</div>
-		</main>
+				<ChatInput socket={socket} />
+			</>}
+		/>
 	</>;
 }
 
