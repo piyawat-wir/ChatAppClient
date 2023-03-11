@@ -30,9 +30,11 @@ export default function ChatInput({ socket }: Props) {
 					onChange={e => setMessage(e.currentTarget.value)}
 					ref={inputBoxRef}
 				/>
-				<button type='submit' onClick={e => sendMessage()}>
-					Send <Image src={'/img/icon_send.svg'} alt={'send'}
-						width={24} height={24} style={{ filter: 'invert(100%)', marginLeft: '5px' }}
+				<button type='submit' onClick={e => sendMessage()}>Send
+					<Image
+						src={'/img/icon_send.svg'} alt={'send'}
+						width={24} height={24}
+						style={{ filter: 'invert(100%)', marginLeft: '5px' }}
 					/>
 				</button>
 			</div>
