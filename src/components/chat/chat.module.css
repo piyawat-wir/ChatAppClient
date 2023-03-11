@@ -69,7 +69,7 @@
     justify-content: center;
 }
 
-.input textarea {
+.input .inputfield {
 	width: 100%;
 	margin-right: 10px;
 	word-break: break-word;
