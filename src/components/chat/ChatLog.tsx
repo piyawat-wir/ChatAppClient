@@ -1,48 +1,49 @@
 import MsgBox from "./MsgBox"
 import styles from './chat.module.css';
 import { useEffect, useRef, useState } from "react";
+import { Socket } from "socket.io-client";
 
 type Props = {
-	room: string,
+	socket: Socket
+	userid: string
+}
+
+export enum MessageType {
+	Text = 'text'
+}
+
+export interface Message {
+	id: number
+	userid: string
 	username: string
+	profilePicture: string
+	type: MessageType
+	data: string
+	time: number
 }
 
-export type Message = ReturnType<typeof makeMessage>
-
-let timeOffset = 0
-const makeMessage = (text: string, user: string) => (
-	{ text, user, time: Date.now() + (timeOffset += 1700) }
-)
-
-const user = {
-	a: "Red Dum",
-	b: "Bored_fox",
-}
-
-const hardMakeMessages = () => [
-	makeMessage("Hello!! >W<", user.a),
-	makeMessage("AGRHHHHHHHHHHHHH!!!!!!!!11+", user.b),
-	makeMessage("watt?", user.a),
-	makeMessage("me ded", user.b),
-	makeMessage("goodbye world~", user.b),
-	makeMessage(".-.", user.a),
-	makeMessage("ummmmm...", user.a),
-	makeMessage("u good?", user.a),
-	makeMessage("101011100001101000011010101010100001111110100010110100110", user.b),
-	makeMessage("boop Beep!! Bop~ bOoop!", user.b),
-	makeMessage(".=.", user.a),
-];
-
-export default function ChatLog({ room, username }: Props) {
+export default function ChatLog({ socket, userid }: Props) {
 
 	const [messages, setMessages] = useState<Message[]>([]);
 	const list = useRef<HTMLDivElement>(null);
 
+	// On other message sent
 	useEffect(() => {
-		const messages = hardMakeMessages();
-		setMessages(messages);
-	}, [])
+		socket.on('other_sent', (data: Message) => {
+			setMessages(current=>[...current, { ...data	}])
+		})
+		return () => {socket.off('other_sent')}
+	}, [socket])
 
+	// On chat log is received.
+	useEffect(() => {
+		socket.on('chat_log', (data: Message[]) => {
+			setMessages(data)
+		})
+		return () => {socket.off('chat_log')}
+	}, [socket])
+
+	// On new message added
 	useEffect(() => {
 		list.current?.lastElementChild?.scrollIntoView();
 	}, [messages])
@@ -50,7 +51,7 @@ export default function ChatLog({ room, username }: Props) {
 	return <>
 		<div className={styles.log} ref={list}>
 			{messages.map(msg => {
-				return (<MsgBox key={msg.time} msg={msg} righted={(msg.user == user.a)} />)
+				return (<MsgBox key={msg.time} msg={msg} righted={(msg.userid == userid)} />)
 			})}
 		</div>
 	</>;
