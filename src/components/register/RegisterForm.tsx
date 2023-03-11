@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react"
 import styles from './RegisterForm.module.css'
 
+export const ProfilePictureNames = ['reddumb', 'boredfox']
+
 export default function RegisterForm() {
 
 	const [username, setUsername] = useState('');
@@ -35,7 +37,8 @@ export default function RegisterForm() {
 		}
 
 		try {
-			const { data: userdata } = await createUser({ name: username, profilePicture: '' })
+			const profPic = ProfilePictureNames[Math.floor(Math.random()*ProfilePictureNames.length)]
+			const { data: userdata } = await createUser({ name: username, profilePicture: profPic })
 			console.log(userdata);
 		} catch (err) {
 			return console.error(err);

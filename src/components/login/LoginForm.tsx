@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react"
+import { ProfilePictureNames } from "../register/RegisterForm";
 import styles from './LoginForm.module.css'
 
 export default function LoginForm() {
@@ -38,7 +39,8 @@ export default function LoginForm() {
 		}
 
 		try {
-			const { data: userdata } = await createUser({ name: username, profilePicture: '', roomcode })
+			const profPic = ProfilePictureNames[Math.floor(Math.random()*ProfilePictureNames.length)]
+			const { data: userdata } = await createUser({ name: username, profilePicture: profPic, roomcode })
 			console.log(userdata);
 
 			setSuccess(true);
