@@ -25,7 +25,7 @@ export interface BackendRequest {
 }
 export async function requestBackend<T>({ path, axiosMethod, auth, data }: BackendRequest) {
 	try {
-		const uri = new URL(path, process.env.BACKEND_URI).href;
+		const uri = new URL(path, process.env.NEXT_PUBLIC_BACKEND_URI).href;
 		const body: BackendRequestBody = { auth, data };
 		const res = await axiosMethod<T>(uri, body);
 		if (!acceptStatus.includes(res.status))
