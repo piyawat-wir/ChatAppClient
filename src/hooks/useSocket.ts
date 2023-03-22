@@ -17,7 +17,7 @@ export default function useSocket(sessionToken?: string) {
 
 		socket.close();
 		const socketOptions = { auth: { token: sessionToken } };
-		const newSocket = io(process.env.BACKEND_URI, socketOptions)
+		const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URI, socketOptions)
 		setSocket(newSocket);
 
 	}, [sessionToken, socket])
